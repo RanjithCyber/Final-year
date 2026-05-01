@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, "public")));
 
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 
 let failedAttempts = {};
 let attackLogs = [];
@@ -92,22 +92,13 @@ const mailUser = process.env.EMAIL_USER || "rasithshahul814@gmail.com";
 const mailPass = process.env.EMAIL_PASS || "ccik fwcr cxyy ovaw";
 const adminEmail = process.env.ADMIN_EMAIL || mailUser;
 
-const transporterConfig = {
+const transporter = nodemailer.createTransport({
+  service: process.env.SMTP_SERVICE || "gmail",
   auth: {
     user: mailUser,
     pass: mailPass,
   },
-};
-
-if (process.env.SMTP_SERVICE) {
-  transporterConfig.service = process.env.SMTP_SERVICE;
-} else {
-  transporterConfig.host = process.env.SMTP_HOST || "smtp.gmail.com";
-  transporterConfig.port = Number(process.env.SMTP_PORT || 465);
-  transporterConfig.secure = true;
-}
-
-const transporter = nodemailer.createTransport(transporterConfig);
+});
 
 function isMailConfigured() {
   return Boolean(mailUser && mailPass && adminEmail);
@@ -456,7 +447,7 @@ async function getLocation(ip) {
       };
     }
 
-    const response = await axios.get(`https://ip-api.com/json/${ip}`);
+    const response = await axios.get(`http://ip-api.com/json/${ip}`);
 
     return {
       country: response.data.country || "Unknown",
