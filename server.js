@@ -1,6 +1,3 @@
-// ⚠ FOR LOCAL DEVELOPMENT ONLY
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
 const express = require("express");
 const nodemailer = require("nodemailer");
 const bodyParser = require("body-parser");
@@ -20,7 +17,7 @@ app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, "public")));
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 let failedAttempts = {};
 let attackLogs = [];
@@ -80,7 +77,11 @@ function isPrivateOrLocalIP(ip) {
   }
 
   const lowerIP = ip.toLowerCase();
-  return lowerIP.startsWith("fc") || lowerIP.startsWith("fd") || lowerIP.startsWith("fe80:");
+  return (
+    lowerIP.startsWith("fc") ||
+    lowerIP.startsWith("fd") ||
+    lowerIP.startsWith("fe80:")
+  );
 }
 
 /* ================================
@@ -91,13 +92,22 @@ const mailUser = process.env.EMAIL_USER || "rasithshahul814@gmail.com";
 const mailPass = process.env.EMAIL_PASS || "ccik fwcr cxyy ovaw";
 const adminEmail = process.env.ADMIN_EMAIL || mailUser;
 
-const transporter = nodemailer.createTransport({
-  service: process.env.SMTP_SERVICE || "gmail",
+const transporterConfig = {
   auth: {
     user: mailUser,
     pass: mailPass,
   },
-});
+};
+
+if (process.env.SMTP_SERVICE) {
+  transporterConfig.service = process.env.SMTP_SERVICE;
+} else {
+  transporterConfig.host = process.env.SMTP_HOST || "smtp.gmail.com";
+  transporterConfig.port = Number(process.env.SMTP_PORT || 465);
+  transporterConfig.secure = true;
+}
+
+const transporter = nodemailer.createTransport(transporterConfig);
 
 function isMailConfigured() {
   return Boolean(mailUser && mailPass && adminEmail);
@@ -446,7 +456,7 @@ async function getLocation(ip) {
       };
     }
 
-    const response = await axios.get(`http://ip-api.com/json/${ip}`);
+    const response = await axios.get(`https://ip-api.com/json/${ip}`);
 
     return {
       country: response.data.country || "Unknown",
