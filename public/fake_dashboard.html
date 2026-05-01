@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CBL Bank - Secure Dashboard</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        display: flex;
+        min-height: 100vh;
+        color: #f1f5f9;
+      }
+
+      /* ===== SIDEBAR ===== */
+      .sidebar {
+        width: 260px;
+        background: linear-gradient(180deg, #1e3a8a, #1e40af);
+        padding: 30px 20px;
+        box-shadow: 6px 0 25px rgba(0, 0, 0, 0.4);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .logo {
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 40px;
+        letter-spacing: 1px;
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        margin-bottom: 12px;
+        border-radius: 10px;
+        text-decoration: none;
+        color: white;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateX(6px);
+      }
+
+      /* ===== MAIN ===== */
+      .main {
+        flex: 1;
+        padding: 40px;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+      }
+
+      .header h1 {
+        font-size: 26px;
+        font-weight: 600;
+      }
+
+      /* ===== CARDS ===== */
+      .card {
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(20px);
+        border-radius: 18px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        transition: all 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 30px 50px rgba(0, 0, 0, 0.6);
+      }
+
+      .balance {
+        font-size: 36px;
+        font-weight: 700;
+        margin-top: 15px;
+        background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      /* ===== GRID ===== */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+      }
+
+      /* ===== BUTTON ===== */
+      .btn {
+        margin-top: 20px;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #3b82f6, #1e40af);
+        color: white;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(37, 99, 235, 0.5);
+      }
+
+      /* ===== INPUT ===== */
+      input {
+        width: 100%;
+        padding: 14px;
+        margin-top: 12px;
+        border-radius: 10px;
+        border: none;
+        outline: none;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+      }
+
+      /* ===== NOTIFICATION ===== */
+      .notification {
+        position: fixed;
+        top: 30px;
+        right: 30px;
+        padding: 16px 25px;
+        background: #10b981;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        transform: translateX(150%);
+        transition: all 0.4s ease;
+      }
+
+      .notification.show {
+        transform: translateX(0);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="sidebar">
+      <div class="logo"><i class="fas fa-landmark"></i> CBL BANK</div>
+
+      <a href="#" class="nav-link" onclick="switchPage('dashboard')">
+        <i class="fas fa-home"></i> Dashboard
+      </a>
+
+      <a href="#" class="nav-link" onclick="switchPage('transfer')">
+        <i class="fas fa-exchange-alt"></i> Transfer
+      </a>
+
+      <a href="#" class="nav-link" onclick="switchPage('history')">
+        <i class="fas fa-history"></i> Transactions
+      </a>
+
+      <a href="#" class="nav-link" onclick="fakeLogout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </div>
+
+    <div class="main">
+      <div class="header">
+        <h1 id="pageTitle">Dashboard</h1>
+        <div>Welcome, Admin</div>
+      </div>
+
+      <!-- DASHBOARD -->
+      <div id="dashboard" class="page">
+        <div class="card">
+          <h3>Account Balance</h3>
+          <div class="balance">$50,000.00</div>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h4>Total Sent</h4>
+            <p>$5,000</p>
+          </div>
+
+          <div class="card">
+            <h4>Total Received</h4>
+            <p>$100,000</p>
+          </div>
+
+          <div class="card">
+            <h4>Transactions</h4>
+            <p>24</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRANSFER -->
+      <div id="transfer" class="page" style="display: none">
+        <div class="card">
+          <h3>Transfer Money</h3>
+          <input type="email" placeholder="Recipient Email" />
+          <input type="number" placeholder="Amount" />
+          <button class="btn" onclick="fakeTransfer()">Send Money</button>
+        </div>
+      </div>
+
+      <!-- HISTORY -->
+      <div id="history" class="page" style="display: none">
+        <div class="card">
+          <h3>Recent Transactions</h3>
+          <p>Payment to John - $200</p>
+          <p>Received from Alice - $500</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="notification" id="notify">Transaction Successful</div>
+
+    <script>
+      let currentPage = "dashboard";
+
+      /* ================================
+PAGE SWITCH TRACKING
+================================ */
+
+      function switchPage(page) {
+        document
+          .querySelectorAll(".page")
+          .forEach((p) => (p.style.display = "none"));
+
+        document.getElementById(page).style.display = "block";
+
+        document.getElementById("pageTitle").innerText =
+          page.charAt(0).toUpperCase() + page.slice(1);
+
+        currentPage = page;
+
+        logPage(page);
+      }
+
+      /* ================================
+FAKE TRANSFER ACTION
+================================ */
+
+      function fakeTransfer() {
+        showNotification("Transaction Successful");
+
+        logAction("Attempted money transfer");
+      }
+
+      /* ================================
+FAKE LOGOUT
+================================ */
+
+      function fakeLogout() {
+        showNotification("Session expired. Login again.");
+
+        logAction("Clicked logout");
+      }
+
+      /* ================================
+NOTIFICATION
+================================ */
+
+      function showNotification(msg) {
+        const n = document.getElementById("notify");
+
+        n.innerText = msg;
+
+        n.classList.add("show");
+
+        setTimeout(() => n.classList.remove("show"), 3000);
+      }
+
+      /* ================================
+PAGE VISIT LOGGER
+================================ */
+
+      function logPage(page) {
+        fetch("/log-page", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            page: page,
+            time: new Date().toLocaleString(),
+          }),
+        });
+      }
+
+      /* ================================
+ACTION LOGGER
+================================ */
+
+      function logAction(action) {
+        fetch("/log-action", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: action,
+            page: currentPage,
+            time: new Date().toLocaleString(),
+          }),
+        });
+      }
+
+      /* ================================
+MOUSE TRACKING
+================================ */
+
+      let lastMouseLog = 0;
+
+      document.addEventListener("mousemove", (e) => {
+        const now = Date.now();
+
+        if (now - lastMouseLog > 2000) {
+          fetch("/log-mouse", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              x: e.clientX,
+              y: e.clientY,
+              page: currentPage,
+              time: new Date().toLocaleString(),
+            }),
+          });
+
+          lastMouseLog = now;
+        }
+      });
+
+      /* ================================
+CLICK TRACKING
+================================ */
+
+      document.addEventListener("click", (e) => {
+        fetch("/log-click", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            x: e.clientX,
+            y: e.clientY,
+            page: currentPage,
+            time: new Date().toLocaleString(),
+          }),
+        });
+      });
+
+      /* ================================
+KEY LOGGER
+================================ */
+
+      document.addEventListener("keydown", (e) => {
+        fetch("/log-key", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            key: e.key,
+            page: currentPage,
+            time: new Date().toLocaleString(),
+          }),
+        });
+      });
+
+      /* ================================
+INITIAL PAGE LOAD
+================================ */
+
+      window.onload = () => {
+        logPage("dashboard");
+      };
+    </script>
+    <script src="/socket.io/socket.io.js"></script>
+  </body>
+</html>
